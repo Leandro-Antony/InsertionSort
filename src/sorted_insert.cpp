@@ -61,6 +61,13 @@ int* insert_in_sorted(const int* first, int* last, const int& val, Compare cmp) 
   // |   |   |   |   |   |    |
   // +-------------------+----+
 
+	auto it = last;
+	while (it > first && cmp (val, *(it-1))) {
+			*it = *(it-1);
+			it--;
+	}	
+	last++;
+	*it = val;
   return last;
 }
 
