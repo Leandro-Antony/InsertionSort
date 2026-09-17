@@ -33,43 +33,16 @@ using Compare = bool (*)(const int&, const int&);
  *
  *  If the elements are not sorted the result is undefined.
  */
-int* insert_in_sorted(const int* first, int* last, const int& val, Compare cmp) {
-  // TODO: Implemente sua solução aqui
-
-  // Simular a inserção do val == 2.
-  //
-  //  first          last
-  //   |              | +-- it
-  //   v              v v
-  // +-------------------+---+
-  // | 1 | 3 | 5 | 9 |   |   |
-  // +-------------------+---+
-  //
-  //  first              last
-  //   |   +-- it          |
-  //   v   v               v
-  // +-------------------+---+
-  // | 1 | 2 | 3 | 5 | 9 |   |
-  // +-------------------+---+
-
-  //  Condição inicial:
-  //
-  // first/last
-  //   |
-  //   v
-  // +-------------------+----+
-  // |   |   |   |   |   |    |
-  // +-------------------+----+
-
+int* insert_in_sorted(const int* first, int* last, int val, Compare cmp) {
 	auto it = last;
 	while (it > first && cmp (val, *(it-1))) {
 			*it = *(it-1);
 			it--;
 	}	
-	last++;
 	*it = val;
-  return last;
+  return ++last;
 }
+
 
 /// Prints the elemets of the specified range on the standard output stream.
 /*!
@@ -83,6 +56,13 @@ void print_array(const int* first, const int* last) {
   std::cout << "]\n";
 }
 
+void insertionSort (int* first, int* last, Compare cmp) {
+	auto nLast = first;
+	while (nLast != last) {
+		nLast = insert_in_sorted(first, nLast, *nLast, cmp);
+		print_array(first, nLast);
+	}
+}
 /// The comparison function. This is part of the client code.
 /*!
  * Comparison function that implements a total strict order among inegers.
@@ -98,31 +78,24 @@ int main() {
   // I. PREPARATION
   // --------------------------------------------------------------------------------
   // The data array with fixed value
-  constexpr std::array source{ 8, 2, 1, 10, 3, 5, 7, 6, 4, 9 };
-
+  std::array source{ 8, 2, 1, 10, 3, 5, 7, 6, 4, 9 };
+  /*
   // This is the destination (sorted) array that will receive the input data.
   std::array<int, source.size()> destination;
   // Fill up the destination array with zeros.
   std::fill(destination.begin(), destination.end(), 0);
   // Show the data source
   std::cout << ">>> Data source\n";
+  */
   print_array(source.begin(), source.end());
 
   // ================================================================================
   // II. INSERTING VALUES AND KEEPING THE ARRAY SORTED
   // --------------------------------------------------------------------------------
 
-  std::cout << ">>> Destination array\n";
-  print_array(destination.begin(), destination.end());
+  insertionSort(source.begin(), source.end(), compare_ints);
 
-  // Let us make the destination logically "empty"
-  auto* current_last = std::begin(destination);  // (last == first) => empty array.
-  // Insert values from the source array into the destination array.
-  for (int val : source) {
-    std::cout << "\n>>> Inserting " << val << '\n';
-    current_last = insert_in_sorted(destination.begin(), current_last, val, compare_ints);
-    print_array(std::begin(destination), current_last);
-  }
+  print_array(source.begin(), source.end());
 
   std::cout << "\n>>> Normal ending...\n\n";
 
